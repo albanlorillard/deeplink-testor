@@ -37,6 +37,7 @@
     function showDeepLinks() {
         const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
         const ul = document.getElementById('deepLinks');
+        ul.innerHTML = '';
         console.log(deepLinks);
         deepLinks.forEach((deepLink) => {
             const li = document.createElement('li');
