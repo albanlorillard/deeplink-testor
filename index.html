@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Deep link tester</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Deep links tester</h1>
+
+        <h2>Add a deep link</h2>
+            <label>Deep link URI: <input id="url" type="text"/></label>
+            <button onclick="addDeepLink(); showDeepLinks();">Add</button>
+
+    </header>
+
+<main>
+
+    <h2>Your deep links</h2>
+    <ul id="deepLinks">
+
+    </ul>
+
+</main>
+
+<script>
+    function addDeepLink() {
+        const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
+        deepLinks.push(document.getElementById('url').value);
+
+        window.localStorage.setItem('deepLinks', JSON.stringify(deepLinks))
+    }
+
+    function showDeepLinks() {
+        const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
+        const ul = document.getElementById('deepLinks');
+        console.log(deepLinks);
+        deepLinks.forEach((deepLink) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${deepLink}">${deepLink}</a>`;
+            ul.prepend(li);
+        })
+    }
+
+    showDeepLinks();
+
+</script>
+
+</body>
+
+</html>
