@@ -12,14 +12,18 @@
         <h1>Deep links tester</h1>
 
         <h2>Add a deep link</h2>
+        <form action="#" onsubmit="addDeepLink(); showDeepLinks();">
             <label>Deep link URI: <input id="url" type="text"/></label>
-            <button onclick="addDeepLink(); showDeepLinks();">Add</button>
-
+            <button type="submit" onclick="">Add</button>
+        </form>
     </header>
 
 <main>
 
     <h2>Your deep links</h2>
+
+    <button onclick="clearDeepLinks(); showDeepLinks();">Clear</button>
+
     <ul id="deepLinks">
 
     </ul>
@@ -27,11 +31,24 @@
 </main>
 
 <script>
+
+
+
     function addDeepLink() {
         const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
         deepLinks.push(document.getElementById('url').value);
 
-        window.localStorage.setItem('deepLinks', JSON.stringify(deepLinks))
+        window.localStorage.setItem('deepLinks', JSON.stringify(deepLinks));
+    }
+
+    function removeDeepLink(id) {
+        const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
+        deepLinks.splice(id, 1);
+        window.localStorage.setItem('deepLinks', JSON.stringify(deepLinks));
+    }
+
+    function clearDeepLinks() {
+        window.localStorage.setItem('deepLinks', JSON.stringify([]));
     }
 
     function showDeepLinks() {
@@ -39,9 +56,9 @@
         const ul = document.getElementById('deepLinks');
         ul.innerHTML = '';
         console.log(deepLinks);
-        deepLinks.forEach((deepLink) => {
+        deepLinks.forEach((deepLink, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `<a href="${deepLink}">${deepLink}</a>`;
+            li.innerHTML = `<a href="${deepLink}">${deepLink}</a> - <button onclick="removeDeepLink(${index});showDeepLinks();">Delete</button>`;
             ul.prepend(li);
         })
     }
