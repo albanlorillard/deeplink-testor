@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Deep links tester</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 
 <body>
@@ -28,6 +30,15 @@
 
     </ul>
 
+    <h2>Load deep links</h2>
+    <form action="#" onsubmit="loadDeepLinks(); showDeepLinks();">
+        <label>Deep links payloads: <input id="import" type="text"/></label>
+        <button type="submit" onclick="">Upload</button>
+    </form>
+
+    <h2>Export deep links</h2>
+        <input id="deeplinksLocalStorage" type="text" />
+        <button type="submit" onclick="copyInClipboard()">Copy in clipboard</button>
 </main>
 
 <script>
@@ -55,18 +66,35 @@
         const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
         const ul = document.getElementById('deepLinks');
         ul.innerHTML = '';
-        console.log(deepLinks);
+
         deepLinks.forEach((deepLink, index) => {
             const li = document.createElement('li');
             li.innerHTML = `<a href="${deepLink}">${deepLink}</a> - <button onclick="removeDeepLink(${index});showDeepLinks();">Delete</button>`;
             ul.prepend(li);
         })
+
+        const copyText = document.querySelector("#deeplinksLocalStorage");
+        copyText.value = window.localStorage.getItem('deepLinks') ?? '[]';
+    }
+
+    function loadDeepLinks() {
+        const copyText = document.querySelector("#import");
+        window.localStorage.setItem('deepLinks', copyText.value);
+    }
+
+    function copyInClipboard() {
+        const copyText = document.querySelector("#deeplinksLocalStorage");
+        copyText.value = window.localStorage.getItem('deepLinks') ?? '[]';
+        copyText.select();
+        document.execCommand("copy");
     }
 
     showDeepLinks();
 
 </script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 </body>
 
 </html>
