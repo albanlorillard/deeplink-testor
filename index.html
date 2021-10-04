@@ -14,7 +14,7 @@
         <h1>Deep links tester</h1>
 
         <h2>Add a deep link</h2>
-        <form action="#" onsubmit="addDeepLink(); showDeepLinks();">
+        <form action="#" onsubmit="addDeepLink(); rendered();">
             <label>Deep link URI: <input id="url" type="text"/></label>
             <button type="submit" onclick="">Add</button>
         </form>
@@ -24,14 +24,14 @@
 
     <h2>Your deep links</h2>
 
-    <button onclick="clearDeepLinks(); showDeepLinks();">Clear</button>
+    <button onclick="clearDeepLinks(); rendered();">Clear</button>
 
     <ul id="deepLinks">
 
     </ul>
 
     <h2>Load deep links</h2>
-    <form action="#" onsubmit="loadDeepLinks(); showDeepLinks();">
+    <form action="#" onsubmit="loadDeepLinks(); rendered();">
         <label>Deep links payloads: <input id="import" type="text"/></label>
         <button type="submit" onclick="">Upload</button>
     </form>
@@ -39,11 +39,12 @@
     <h2>Export deep links</h2>
         <input id="deeplinksLocalStorage" type="text" />
         <button type="submit" onclick="copyInClipboard()">Copy in clipboard</button>
+
+    <h2>Share deep links</h2>
+        <a href="" id="permalink">aas</a>
 </main>
 
 <script>
-
-
 
     function addDeepLink() {
         const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
@@ -62,19 +63,25 @@
         window.localStorage.setItem('deepLinks', JSON.stringify([]));
     }
 
-    function showDeepLinks() {
+    function rendered() {
         const deepLinks = JSON.parse(window.localStorage.getItem('deepLinks')) ?? [];
         const ul = document.getElementById('deepLinks');
         ul.innerHTML = '';
 
         deepLinks.forEach((deepLink, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `<a href="${deepLink}">${deepLink}</a> - <button onclick="removeDeepLink(${index});showDeepLinks();">Delete</button>`;
+            li.innerHTML = `<a href="${deepLink}">${deepLink}</a> - <button onclick="removeDeepLink(${index});rendered();">Delete</button>`;
             ul.prepend(li);
         })
 
         const copyText = document.querySelector("#deeplinksLocalStorage");
         copyText.value = window.localStorage.getItem('deepLinks') ?? '[]';
+
+        const permalink = document.querySelector("#permalink");
+        const url = `./index.html?payload=${encodeURIComponent(window.localStorage.getItem('deepLinks'))}`;
+        permalink.href = url;
+        permalink.innerHTML = url;
+
     }
 
     function loadDeepLinks() {
@@ -89,7 +96,14 @@
         document.execCommand("copy");
     }
 
-    showDeepLinks();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const payload = urlParams.get('payload');
+    if (payload) {
+        window.localStorage.setItem('deepLinks', payload);
+    }
+
+    rendered();
 
 </script>
 
