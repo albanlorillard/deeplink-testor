@@ -26,22 +26,11 @@
 
     <button onclick="clearDeepLinks(); rendered();">Clear</button>
 
-    <ul id="deepLinks">
-
-    </ul>
-
-    <h2>Load deep links</h2>
-    <form action="#" onsubmit="loadDeepLinks(); rendered();">
-        <label>Deep links payloads: <input id="import" type="text"/></label>
-        <button type="submit" onclick="">Upload</button>
-    </form>
-
-    <h2>Export deep links</h2>
-        <input id="deeplinksLocalStorage" type="text" />
-        <button type="submit" onclick="copyInClipboard()">Copy in clipboard</button>
+    <ul id="deepLinks"></ul>
 
     <h2>Share deep links</h2>
-        <a href="" id="permalink">aas</a>
+        <input type=text id="permalink"/>
+        <button onclick="copyInClipboard()">Copy in clipboard</button>
 </main>
 
 <script>
@@ -74,25 +63,15 @@
             ul.prepend(li);
         })
 
-        const copyText = document.querySelector("#deeplinksLocalStorage");
-        copyText.value = window.localStorage.getItem('deepLinks') ?? '[]';
-
         const permalink = document.querySelector("#permalink");
-        const url = `./index.html?payload=${encodeURIComponent(window.localStorage.getItem('deepLinks'))}`;
-        permalink.href = url;
-        permalink.innerHTML = url;
-
+        const url = `?payload=${encodeURIComponent(btoa(window.localStorage.getItem('deepLinks')))}`;
+        permalink.value = `${window.location.origin}${window.location.pathname}${url}`;
+        window.history.pushState({"html":'',"pageTitle":''},"", url);
     }
 
-    function loadDeepLinks() {
-        const copyText = document.querySelector("#import");
-        window.localStorage.setItem('deepLinks', copyText.value);
-    }
-
-    function copyInClipboard() {
-        const copyText = document.querySelector("#deeplinksLocalStorage");
-        copyText.value = window.localStorage.getItem('deepLinks') ?? '[]';
-        copyText.select();
+     function copyInClipboard() {
+         const copyText = document.querySelector("#permalink");
+         copyText.select();
         document.execCommand("copy");
     }
 
@@ -100,7 +79,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const payload = urlParams.get('payload');
     if (payload) {
-        window.localStorage.setItem('deepLinks', payload);
+        window.localStorage.setItem('deepLinks', atob(payload));
     }
 
     rendered();
